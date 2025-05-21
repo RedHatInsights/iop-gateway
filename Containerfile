@@ -18,6 +18,8 @@ COPY identity.pl /etc/nginx/perl/identity.pl
 
 RUN chown -R nginx:nginx /usr/share/nginx/html /etc/nginx/certs /var/log/nginx /etc/nginx /var/lib/nginx /run
 
+COPY config/ /etc/nginx/
+
 USER nginx
 
 CMD ["nginx", "-g", "daemon off;"]

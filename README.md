@@ -44,7 +44,7 @@ podman run --rm -p 8080:8080 myregistry.local/iop-gateway:dev
 You can also mount custom configuration:
 
 ```bash
-podman run --rm -p 8080:8080 -v $(pwd)/config:/app/config:Z myregistry.local/iop-gateway:dev
+podman run --rm -p 8080:8080 -v $(pwd)/config:/etc/nginx/:Z myregistry.local/iop-gateway:dev
 ```
 
 ### Cleaning Up
