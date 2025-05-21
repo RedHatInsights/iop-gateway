@@ -61,5 +61,5 @@ If you want to push the image to a remote registry:
 make push IMAGE=myregistry.local/iop-gateway:dev
 ```
 
-##Contributing
+## Contributing
 Feel free to open issues or pull requests. Contributions are welcome!
