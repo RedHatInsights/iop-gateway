@@ -32,20 +32,47 @@ sub set_identity_header {
         return undef;
     }
 
-    $identity = {
-        'identity' => {
-            'org_id' => $org_id,
-            'internal' => {
-                'org_id' => $org_id
-            },
-            'type' => 'System',
-            'auth_type' => 'cert-auth',
-            'system' => {
-                'cn' => $cn,
-                'cert_type' => 'satellite'
+    my $forwarded = $r->header_in("Forwarded"); # RFC 7239
+    if (!$forwarded || $forwarded eq "") {
+        # Use User identity for non-forwarded requests
+        $identity = {
+            'identity' => {
+                'auth_type' => 'jwt-auth',
+                'org_id' => $org_id,
+                'internal' => {
+                    'org_id' => $org_id
+                },
+                'type' => 'User',
+                'user' => {
+                    'email' => 'iop-gateway@example.com',
+                    'first_name' => 'First',
+                    'is_active' => JSON::PP::true,
+                    'is_internal' => JSON::PP::true,
+                    'is_org_admin' => JSON::PP::false,
+                    'last_name' => 'Last',
+                    'locale' => 'en_US',
+                    'user_id' => '1',
+                    'username' => $cn
+                }
             }
-        }
-    };
+        };
+    } else {
+        # Use System identity for forwarded requests
+        $identity = {
+            'identity' => {
+                'org_id' => $org_id,
+                'internal' => {
+                    'org_id' => $org_id
+                },
+                'type' => 'System',
+                'auth_type' => 'cert-auth',
+                'system' => {
+                    'cn' => $cn,
+                    'cert_type' => 'satellite'
+                }
+            }
+        };
+    }
 
     return encode_base64(encode_json($identity), '');
 }
