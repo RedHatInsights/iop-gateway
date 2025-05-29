@@ -4,21 +4,6 @@ use JSON::PP;
 use MIME::Base64;
 
 sub set_identity_header {
-    my $cert_template = {
-        'identity' => {
-            'org_id' => '',
-            'internal' => {
-                'org_id' => ''
-            },
-            'type' => 'System',
-            'auth_type' => 'cert-auth',
-            'system' => {
-                'cn' => '',
-                'cert_type' => 'satellite'
-            }
-        }
-    };
-
     my $identity;
     my $r = shift;
 
@@ -47,12 +32,22 @@ sub set_identity_header {
         return undef;
     }
 
-    $cert_template->{identity}->{system}->{cn} = $cn;
-    $cert_template->{identity}->{org_id} = $org_id;
-    $cert_template->{identity}->{internal}->{org_id} = $org_id;
-    $identity = encode_base64(encode_json($cert_template), '');
+    $identity = {
+        'identity' => {
+            'org_id' => $org_id,
+            'internal' => {
+                'org_id' => $org_id
+            },
+            'type' => 'System',
+            'auth_type' => 'cert-auth',
+            'system' => {
+                'cn' => $cn,
+                'cert_type' => 'satellite'
+            }
+        }
+    };
 
-    return $identity;
+    return encode_base64(encode_json($identity), '');
 }
 
 1;
