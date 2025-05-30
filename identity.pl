@@ -25,7 +25,7 @@ sub set_identity_header {
     my $ssl_client_s_dn = $r->variable("ssl_client_s_dn");
 
     if (!$ssl_client_s_dn || $ssl_client_s_dn eq "") {
-        $r->log_error("Missing client certificate subject");
+        $r->log_error(0, "Missing client certificate subject");
         return undef;
     }
 
@@ -36,14 +36,14 @@ sub set_identity_header {
     if ($ssl_client_s_dn =~ /O=([^,]+)/) {
         $org_id = $1;
     } else {
-        $r->log_error("Missing O (org_id) in client certificate subject: $ssl_client_s_dn");
+        $r->log_error(0, "Missing O (org_id) in client certificate subject: $ssl_client_s_dn");
         return undef;
     }
 
     if ($ssl_client_s_dn =~ /CN=([^,]+)/) {
         $cn = $1;
     } else {
-        $r->log_error("Missing CN in client certificate subject: $ssl_client_s_dn");
+        $r->log_error(0, "Missing CN in client certificate subject: $ssl_client_s_dn");
         return undef;
     }
 
