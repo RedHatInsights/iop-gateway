@@ -18,7 +18,7 @@ COPY identity.pl /etc/nginx/perl/identity.pl
 
 RUN chown -R nginx:nginx /usr/share/nginx/html /etc/nginx/certs /var/log/nginx /etc/nginx /var/lib/nginx /run
 
-COPY config/ /etc/nginx/
+COPY nginx/ /etc/nginx/
 
 USER nginx
 
