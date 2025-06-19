@@ -47,10 +47,10 @@ After building, you can run the container using Podman:
 podman run --rm -p 8080:3000 -p 8443:8443  -v ./certs/:/etc/nginx/certs:Z myregistry.local/iop-gateway:dev
 ```
 
-You can also mount custom configuration:
+You can also mount custom configuration that would be included in the `http` block:
 
 ```bash
-podman run --rm -p 8080:3000 -p 8443:8443 -v $(pwd)/config:/etc/nginx/:Z myregistry.local/iop-gateway:dev
+podman run --rm -p 8080:3000 -p 8443:8443 -v $(pwd)/config:/etc/nginx/conf.d/:Z myregistry.local/iop-gateway:dev
 ```
 
 ### TLS
