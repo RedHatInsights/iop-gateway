@@ -35,20 +35,48 @@ make build IMAGE=myregistry.local/iop-gateway:dev
 ```
 
 ### Running the Container Locally
+
+Before running the container make sure to create TLS certificates using:
+```bash
+make certs
+```
+
 After building, you can run the container using Podman:
 
 ```bash
-podman run --rm -p 8080:8080 myregistry.local/iop-gateway:dev
+podman run --rm -p 8080:3000 -p 8443:8443  -v ./certs/:/etc/nginx/certs:Z myregistry.local/iop-gateway:dev
 ```
 
 You can also mount custom configuration:
 
 ```bash
-podman run --rm -p 8080:8080 -v $(pwd)/config:/etc/nginx/:Z myregistry.local/iop-gateway:dev
+podman run --rm -p 8080:3000 -p 8443:8443 -v $(pwd)/config:/etc/nginx/:Z myregistry.local/iop-gateway:dev
 ```
 
+### TLS
+
+The TLS is opened on port 8443.
+
+Running the gateway requires the following certificates:
+
+| Certificate path             | Type                       |
+| :--------------------------- | :------------------------- |
+| `/etc/nginx/certs/ca.crt`    | CA PEM certificate         |
+| `/etc/nginx/certs/nginx.crt` | Gateway public certificate |
+| `/etc/nginx/certs/nginx.key` | Gateway private key        |
+
+These certifcates can be generated for local development with `make certs`.
+The destination directory of generated certificates can be set by `CERT_DIR` variable.
+The subjects can be controlled by `NGINX_SUBJECT`, `CA_SUBJECT`, and `CLIENT_SUBJECT`.
+
+To test out the connection with curl:
+```bash
+curl -v -4 --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443
+```
+
+
 ### Cleaning Up
-To remove the built image locally:
+To remove the built image locally and certificates:
 
 ```bash
 make clean
