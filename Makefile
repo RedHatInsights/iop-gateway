@@ -15,6 +15,8 @@ push:
 	@echo "Pushing image: $(IMAGE)"
 	podman push $(IMAGE)
 
+run: build certs
+	podman run --rm -p 8443:8443 -p 3000:3000 -v ./certs/:/etc/nginx/certs:Z "$(IMAGE)"
 
 certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/client.crt
 
@@ -45,4 +47,4 @@ clean:
 	-podman rmi $(IMAGE)
 	rm -rf ./certs/*
 
-.PHONY: build push clean
+.PHONY: build push run clean
