@@ -36,12 +36,13 @@ make build IMAGE=myregistry.local/iop-gateway:dev
 
 ### Running the Container Locally
 
-Before running the container make sure to create TLS certificates using:
+
+To run the container use:
 ```bash
-make certs
+make run
 ```
 
-After building, you can run the container using Podman:
+or you can run it manually with:
 
 ```bash
 podman run --rm -p 8080:3000 -p 8443:8443  -v ./certs/:/etc/nginx/certs:Z myregistry.local/iop-gateway:dev
