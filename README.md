@@ -45,14 +45,21 @@ make run
 or you can run it manually with:
 
 ```bash
-podman run --rm -p 8080:3000 -p 8443:8443  -v ./certs/:/etc/nginx/certs:Z myregistry.local/iop-gateway:dev
+podman run --rm -p 8443:8443  -v ./certs/:/etc/nginx/certs:Z myregistry.local/iop-gateway:dev
 ```
 
 You can also mount custom configuration that would be included in the `http` block:
 
 ```bash
-podman run --rm -p 8080:3000 -p 8443:8443 -v $(pwd)/config:/etc/nginx/conf.d/:Z myregistry.local/iop-gateway:dev
+podman run --rm -p 8443:8443 -v ./config:/etc/nginx/conf.d/:Z myregistry.local/iop-gateway:dev
 ```
+
+Should you want to use an insecure HTTP protocol (without TLS) mount the [`hack/conf.d/http.conf`](hack/conf.d/http.conf) to `/etc/nginx/conf.d/` conainer path and bind port 3000:
+
+```bash
+podman run --rm -p 3000:3000 -v ./hack/conf.d/:/etc/nginx/conf.d/:Z myregistry.local/iop-gateway:dev
+```
+
 
 ### TLS
 
