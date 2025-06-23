@@ -22,4 +22,6 @@ COPY nginx/ /etc/nginx/
 
 USER nginx
 
+EXPOSE 8443/tcp
+
 CMD ["nginx", "-g", "daemon off;"]
