@@ -16,9 +16,11 @@ push:
 	podman push $(IMAGE)
 
 run: build certs
-	podman run --rm -p 8443:8443 -p 3000:3000 -v ./certs/:/etc/nginx/certs:Z "$(IMAGE)"
+	podman run --rm -p 8443:8443 -p 9090:9090 \
+	  -v ./certs/:/etc/nginx/certs:Z -v ./certs/:/etc/nginx/smart-proxy-relay/certs:Z \
+	  "$(IMAGE)"
 
-certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/client.crt
+certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/proxy.crt
 
 $(CERT_DIR)/%.key:
 	@echo "Generating $@ key"
@@ -38,7 +40,7 @@ $(CERT_DIR)/%.crt: $(CERT_DIR)/%.csr $(CERT_DIR)/ca.crt
 $(CERT_DIR)/nginx.csr: $(CERT_DIR)/nginx.key
 	openssl req -new -key "$<" -subj "$(NGINX_SUBJECT)" -out "$@"
 
-$(CERT_DIR)/client.csr: $(CERT_DIR)/client.key
+$(CERT_DIR)/proxy.csr: $(CERT_DIR)/proxy.key
 	openssl req -new -key "$<" -subj "$(CLIENT_SUBJECT)" -out "$@"
 
 # Clean target (optional)
