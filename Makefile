@@ -3,7 +3,8 @@ IMAGE ?= quay.io/iop/gateway:latest
 CERT_DIR ?= certs
 NGINX_SUBJECT ?= /CN=localhost
 CA_SUBJECT ?= /CN=My CA
-CLIENT_SUBJECT ?= /CN=localhost
+RELAY_SUBJECT ?= /CN=localhost
+CLIENT_SUBJECT ?= /CN=localhost/O=1
 
 # Build target
 build:
@@ -20,7 +21,7 @@ run: build certs
 	  -v ./certs/:/etc/nginx/certs:Z -v ./certs/:/etc/nginx/smart-proxy-relay/certs:Z \
 	  "$(IMAGE)"
 
-certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/proxy.crt
+certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/proxy.crt $(CERT_DIR)/client.crt
 
 $(CERT_DIR)/%.key:
 	@echo "Generating $@ key"
@@ -41,6 +42,9 @@ $(CERT_DIR)/nginx.csr: $(CERT_DIR)/nginx.key
 	openssl req -new -key "$<" -subj "$(NGINX_SUBJECT)" -out "$@"
 
 $(CERT_DIR)/proxy.csr: $(CERT_DIR)/proxy.key
+	openssl req -new -key "$<" -subj "$(RELAY_SUBJECT)" -out "$@"
+
+$(CERT_DIR)/client.csr: $(CERT_DIR)/client.key
 	openssl req -new -key "$<" -subj "$(CLIENT_SUBJECT)" -out "$@"
 
 # Clean target (optional)
