@@ -89,6 +89,21 @@ To test out the connection with curl:
 curl -v -4 --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443
 ```
 
+### Testing
+
+Identity generation can be tested out by a request to `/_identity` which would return the base64 version
+of the identity header.
+
+```bash
+curl -v -4 --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443/_identity | base64 -d
+```
+
+and with `Forwarded` header:
+
+```bash
+curl -v -4 -H 'Forwarded: for="_uuid"' --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443/_identity | base64 -d
+```
+
 
 ### Smart Proxy Relay
 
