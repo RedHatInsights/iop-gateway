@@ -57,7 +57,16 @@ sub set_identity_header {
             }
         };
     } else {
-        # Use System identity for forwarded requests
+        # Use System identity for forwarded requests and utilize the for value
+        # that should include system's UUID (i.e. subscription id).
+        my $owner_id;
+        if ($forwarded =~ /for="?_([^,;"]+)"?/i) {
+            $owner_id = $1;
+        } else {
+            $r->log_error(0, "Missing Forwared for header value (as per RFC7239): $forwarded");
+            return undef;
+        }
+
         $identity = {
             'identity' => {
                 'org_id' => $org_id,
@@ -67,7 +76,7 @@ sub set_identity_header {
                 'type' => 'System',
                 'auth_type' => 'cert-auth',
                 'system' => {
-                    'cn' => $cn,
+                    'cn' => $owner_id,
                     'cert_type' => 'satellite'
                 }
             }
