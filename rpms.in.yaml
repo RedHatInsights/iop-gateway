@@ -1,0 +1,4 @@
+packages: [nginx-mod-http-perl, perl-JSON-PP]
+contentOrigin:
+  repofiles: ["./ubi.repo"]
+arches: [x86_64]
