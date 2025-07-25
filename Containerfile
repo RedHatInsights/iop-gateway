@@ -20,9 +20,6 @@ RUN chown -R nginx:nginx /usr/share/nginx/html /etc/nginx/certs /var/log/nginx /
 
 COPY nginx/ /etc/nginx/
 
-RUN mkdir -p /licenses
-COPY LICENSE /licenses
-
 USER nginx
 
 EXPOSE 8443/tcp
