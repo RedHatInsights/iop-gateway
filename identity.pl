@@ -34,28 +34,44 @@ sub set_identity_header {
 
     my $forwarded = $r->header_in("Forwarded"); # RFC 7239
     if (!$forwarded || $forwarded eq "") {
-        # Use User identity for non-forwarded requests
-        $identity = {
-            'identity' => {
-                'auth_type' => 'jwt-auth',
-                'org_id' => $org_id,
-                'internal' => {
-                    'org_id' => $org_id
-                },
-                'type' => 'User',
-                'user' => {
-                    'email' => 'iop-gateway@example.com',
-                    'first_name' => 'First',
-                    'is_active' => JSON::PP::true,
-                    'is_internal' => JSON::PP::true,
-                    'is_org_admin' => JSON::PP::false,
-                    'last_name' => 'Last',
-                    'locale' => 'en_US',
-                    'user_id' => '1',
-                    'username' => $cn
+        my $identity_type = $r->variable('identity_type');
+        if ($identity_type eq "associate") {
+            $identity = {
+                'identity' => {
+                    'type' => 'Associate',
+                    'auth_type' => 'saml-auth',
+                    'associate' => {
+                        'email' => 'iop-gateway@example.com',
+                        'Role' => [],
+                        'subject_dn' => 'iop-gateway'
+                    }
                 }
-            }
-        };
+            };
+        } else {
+            # Use User identity for non-forwarded requests with no forced identity-type set
+            $identity = {
+                'identity' => {
+                    'auth_type' => 'jwt-auth',
+                    'org_id' => $org_id,
+                    'internal' => {
+                        'org_id' => $org_id
+                    },
+                    'type' => 'User',
+                    'user' => {
+                        'email' => 'iop-gateway@example.com',
+                        'first_name' => 'First',
+                        'is_active' => JSON::PP::true,
+                        'is_internal' => JSON::PP::true,
+                        'is_org_admin' => JSON::PP::false,
+                        'last_name' => 'Last',
+                        'locale' => 'en_US',
+                        'user_id' => '1',
+                        'username' => $cn
+                    }
+                }
+            };
+
+        }
     } else {
         # Use System identity for forwarded requests and utilize the for value
         # that should include system's UUID (i.e. subscription id).
