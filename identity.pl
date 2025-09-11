@@ -14,15 +14,17 @@ sub set_identity_header {
         return undef;
     }
 
-    # Extract org_id (O) and CN from the certificate subject
-    my $org_id;
+    # Extract org_id from header first, fallback to certificate subject
+    my $org_id = $r->header_in("X-Org-Id");
     my $cn;
 
-    if ($ssl_client_s_dn =~ /O=([^,]+)/) {
-        $org_id = $1;
-    } else {
-        $r->log_error(0, "Missing O (org_id) in client certificate subject: $ssl_client_s_dn");
-        return undef;
+    if (!$org_id || $org_id eq "") {
+        if ($ssl_client_s_dn =~ /O=([^,]+)/) {
+            $org_id = $1;
+        } else {
+            $r->log_error(0, "Missing O (org_id) in client certificate subject and no X-Org-Id header: $ssl_client_s_dn");
+            return undef;
+        }
     }
 
     if ($ssl_client_s_dn =~ /CN=([^,]+)/) {
