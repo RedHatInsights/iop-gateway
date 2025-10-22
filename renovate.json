@@ -1,0 +1,8 @@
+{
+    "extends": [
+        "github>RedHatInsights/konflux-pipelines//renovate/foreman_satellite/renovate.json"
+    ],
+    "tekton": {
+        "schedule": ["at any time"]
+    }
+}
