@@ -91,19 +91,23 @@ curl -v -4 --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt 
 
 ### Testing
 
-Identity generation can be tested out by a request to `/_identity` which would return the base64 version
-of the identity header.
+Before running the tests, ensure that the container is running:
 
 ```bash
-curl -v -4 --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443/_identity | base64 -d
+make run
 ```
 
-and with `Forwarded` header:
+Then run the tests:
 
 ```bash
-curl -v -4 -H 'Forwarded: for="_uuid"' --key certs/client.key --cert certs/client.crt --cacert certs/ca.crt https://localhost:8443/_identity | base64 -d
+make test
 ```
 
+To stop the container:
+
+```bash
+make stop
+```
 
 ### Smart Proxy Relay
 

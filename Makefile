@@ -17,9 +17,12 @@ push:
 	podman push $(IMAGE)
 
 run: build certs
-	podman run --rm -p 8443:8443 -p 9090:9090 \
+	podman run -d --name iop-gateway-test --rm -p 8443:8443 -p 9090:9090 \
 	  -v ./certs/:/etc/nginx/certs:Z -v ./certs/:/etc/nginx/smart-proxy-relay/certs:Z \
 	  "$(IMAGE)"
+
+stop:
+	podman stop iop-gateway-test
 
 certs: $(CERT_DIR)/nginx.crt $(CERT_DIR)/proxy.crt $(CERT_DIR)/client.crt
 
@@ -47,10 +50,13 @@ $(CERT_DIR)/proxy.csr: $(CERT_DIR)/proxy.key
 $(CERT_DIR)/client.csr: $(CERT_DIR)/client.key
 	openssl req -new -key "$<" -subj "$(CLIENT_SUBJECT)" -out "$@"
 
+test: certs
+	bash test.sh
+
 # Clean target (optional)
 clean:
 	@echo "Removing local image: $(IMAGE)"
 	-podman rmi $(IMAGE)
 	rm -rf ./certs/*
 
-.PHONY: build push run clean
+.PHONY: build push run clean stop test
