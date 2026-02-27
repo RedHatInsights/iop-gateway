@@ -6,7 +6,6 @@ name: Container image build and publish
 # documentation.
 
 on:
-  pull_request:
   push:
     branches:
       - 'master'
