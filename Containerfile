@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/nginx-126:latest
+FROM registry.access.redhat.com/ubi10/nginx-126:latest
 
 USER 0
 
