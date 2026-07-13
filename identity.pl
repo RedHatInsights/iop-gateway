@@ -47,6 +47,9 @@ sub set_identity_header {
                         'Role' => [],
                         'subject_dn' => 'iop-gateway'
                     }
+                },
+                'entitlements' => {
+                    'insights' => { 'is_entitled' => JSON::PP::true }
                 }
             };
         } else {
@@ -70,6 +73,9 @@ sub set_identity_header {
                         'user_id' => '1',
                         'username' => $cn
                     }
+                },
+                'entitlements' => {
+                    'insights' => { 'is_entitled' => JSON::PP::true }
                 }
             };
 
@@ -97,6 +103,9 @@ sub set_identity_header {
                     'cn' => $owner_id,
                     'cert_type' => 'satellite'
                 }
+            },
+            'entitlements' => {
+                'insights' => { 'is_entitled' => JSON::PP::true }
             }
         };
     }

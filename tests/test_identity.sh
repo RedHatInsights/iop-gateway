@@ -62,5 +62,20 @@ function test_identity_with_forwarded() {
     echo "[${FUNCNAME[0]}] PASS"
 }
 
+function test_identity_entitlements() {
+    echo "Testing identity includes entitlements..."
+
+    identity=$(curl -s -4 --key "$CERT_DIR/client.key" --cert "$CERT_DIR/client.crt" --cacert "$CERT_DIR/ca.crt" "$GATEWAY_URL/_identity" | base64 -d)
+
+    if [[ $(jq -e -r '.entitlements.insights.is_entitled' <<< "$identity") != "true" ]]; then
+        echo "$identity"
+        echo "[${FUNCNAME[0]}][FAIL] entitlements.insights.is_entitled is not true"
+        exit 1
+    fi
+
+    echo "[${FUNCNAME[0]}] PASS"
+}
+
 test_identity_without_forwarded
 test_identity_with_forwarded
+test_identity_entitlements
