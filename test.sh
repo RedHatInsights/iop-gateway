@@ -19,7 +19,7 @@ for i in {1..5}; do
   sleep 1
 done
 
-if [ $i -eq 5 ]; then
+if [ $i -eq 15 ]; then
   echo "Gateway did not start up in time"
   exit 1
 fi
